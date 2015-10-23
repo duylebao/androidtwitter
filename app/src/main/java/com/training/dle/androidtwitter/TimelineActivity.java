@@ -40,20 +40,12 @@ public class TimelineActivity extends AppCompatActivity {
     }
 
     private void populateTimeline(){
-        lvTweets.invalidate();
-        try {
-            Thread.sleep(1000l);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         client.getHomeTimeline(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                List<Tweet> tlist = Tweet.fromJsonArray(response);
-                adapter.addAll(tlist);
-                for(Tweet t : tlist) {
-                    Log.d("DEBUG", "TWEEEEEEEETTTTT: "+t.getId() + " - "+t.getBody());
-                }
+                tweets.clear();
+                tweets.addAll(Tweet.fromJsonArray(response));
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -93,7 +85,6 @@ public class TimelineActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == REQUEST_RESULT){
-            Toast.makeText(this, "loading...", Toast.LENGTH_LONG).show();
             populateTimeline();
         }
     }
