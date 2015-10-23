@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class ComposeActivity extends AppCompatActivity {
@@ -67,6 +68,11 @@ public class ComposeActivity extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, String response, Throwable throwable){
                 Log.i("DEBUG", "FAIL:" + response);
                 throwable.printStackTrace();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.i("DEBUG", "FAIL:" + errorResponse.toString());
             }
         });
     }

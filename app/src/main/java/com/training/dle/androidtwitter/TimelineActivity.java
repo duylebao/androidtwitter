@@ -40,12 +40,20 @@ public class TimelineActivity extends AppCompatActivity {
     }
 
     private void populateTimeline(){
+        lvTweets.invalidate();
+        try {
+            Thread.sleep(1000l);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         client.getHomeTimeline(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                lvTweets.setBackgroundResource(0);
-                adapter.addAll(Tweet.fromJsonArray(response));
-                Log.d("DEBUG", lvTweets.toString());
+                List<Tweet> tlist = Tweet.fromJsonArray(response);
+                adapter.addAll(tlist);
+                for(Tweet t : tlist) {
+                    Log.d("DEBUG", "TWEEEEEEEETTTTT: "+t.getId() + " - "+t.getBody());
+                }
             }
 
             @Override
