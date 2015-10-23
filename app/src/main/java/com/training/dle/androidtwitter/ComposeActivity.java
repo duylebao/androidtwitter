@@ -9,12 +9,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class ComposeActivity extends AppCompatActivity {
@@ -30,7 +28,7 @@ public class ComposeActivity extends AppCompatActivity {
         btnCancel = (Button)findViewById(R.id.btnCancel);
         btnTweet = (Button)findViewById(R.id.btnTweetSubmit);
         tvComposeTweet = (EditText)findViewById(R.id.etComposeText);
-        client = RestApplication.getRestClient();
+        client = TwitterApplication.getRestClient();
     }
 
     @Override

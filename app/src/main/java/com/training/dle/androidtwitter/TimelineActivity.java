@@ -7,7 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.training.dle.androidtwitter.models.Tweet;
-import com.training.dle.androidtwitter.models.User;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -15,7 +14,6 @@ import org.json.JSONObject;
 
 import android.util.Log;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +33,7 @@ public class TimelineActivity extends AppCompatActivity {
         tweets = new ArrayList<Tweet>();
         adapter = new TweetsArrayAdapter(this, tweets);
         lvTweets.setAdapter(adapter);
-        client = RestApplication.getRestClient();
+        client = TwitterApplication.getRestClient();
         populateTimeline();
     }
 
