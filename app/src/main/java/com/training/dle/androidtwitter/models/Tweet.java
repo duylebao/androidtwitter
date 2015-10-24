@@ -3,10 +3,14 @@ package com.training.dle.androidtwitter.models;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Collections;
+import java.util.Locale;
+import java.text.ParseException;
 
 public class Tweet {
     private String id;
@@ -70,4 +74,11 @@ public class Tweet {
         return tweets;
     }
 
+    public Date getCreatedDate() throws ParseException {
+        //Sat Oct 24 16:31:35 +0000 2015
+        final String TWITTER = "EEE MMM dd HH:mm:ss Z yyyy";
+        SimpleDateFormat sf = new SimpleDateFormat(TWITTER, Locale.ENGLISH);
+        sf.setLenient(true);
+        return sf.parse( this.getCreatedTime() );
+    }
 }
