@@ -24,6 +24,8 @@ public class TimelineActivity extends AppCompatActivity {
     private TweetsArrayAdapter adapter;
     private ListView lvTweets;
     public static final int REQUEST_RESULT = 22212;
+    private ResultScrollListener scrollListener;
+    private boolean stopLoading = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,19 +37,47 @@ public class TimelineActivity extends AppCompatActivity {
         lvTweets.setAdapter(adapter);
         client = TwitterApplication.getRestClient();
         populateTimeline();
+
+        scrollListener = new ResultScrollListener(8, 0) {
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+                if (stopLoading){
+                    return false;
+                }
+                populateTimeline(page);
+
+                return true;
+            }
+        };
+        lvTweets.setOnScrollListener(scrollListener);
     }
 
     private void populateTimeline(){
-        client.getHomeTimeline(new JsonHttpResponseHandler() {
+        tweets.clear();
+        populateTimeline(0);
+    }
+
+    private void populateTimeline(int page){
+        long maxId = TwitterClient.MAX_ID;
+        if (page > 0 && this.tweets.size() > 0){
+            Tweet t = tweets.get( tweets.size() - 1);
+            maxId = Long.parseLong(t.getId());
+        }
+        populateTimeline(maxId);
+    }
+
+    private void populateTimeline(long maxId){
+        client.getHomeTimeline(maxId, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                tweets.clear();
+                stopLoading = false;
                 tweets.addAll(Tweet.fromJsonArray(response));
                 adapter.notifyDataSetChanged();
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                stopLoading = true;
                 Log.d("DEBUG", "FAIL:" + errorResponse.toString());
             }
         });

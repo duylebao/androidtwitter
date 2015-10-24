@@ -8,6 +8,7 @@ import android.content.Context;
 import com.codepath.oauth.OAuthBaseClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import android.util.Log;
 
 /*
  * 
@@ -27,18 +28,22 @@ public class TwitterClient extends OAuthBaseClient {
 	public static final String REST_CONSUMER_KEY = "6tC4mTmVQlSdqedCrJZZBAr11";       // Change this
 	public static final String REST_CONSUMER_SECRET = "PhwDtXRSfmpzkxZuyytabe7aLAsJzCD4ScuWASjrMRBXWKA0t9"; // Change this
 	public static final String REST_CALLBACK_URL = "oauth://androidtwitter"; // Change this (here and in manifest)
-	private static final long MAX_ID = 999998267484508160L;
+	public static final long MAX_ID = 999998267484508160L;
+	public static final int NUMBER_OF_ROWS = 10;
 
 	public TwitterClient(Context context) {
 		super(context, REST_API_CLASS, REST_URL, REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REST_CALLBACK_URL);
 	}
 
 	public void getHomeTimeline(AsyncHttpResponseHandler handler) {
+		getHomeTimeline(MAX_ID, handler);
+	}
+
+	public void getHomeTimeline(long maxId, AsyncHttpResponseHandler handler) {
 		String apiUrl = getApiUrl("statuses/home_timeline.json");
 		RequestParams params = new RequestParams();
-	//	params.put("since_id", "1");
-		params.put("max_id", String.valueOf(MAX_ID));
-		params.put("count", 25);
+		params.put("max_id", String.valueOf(maxId));
+		params.put("count", NUMBER_OF_ROWS);
 		client.get(apiUrl, params, handler);
 	}
 
