@@ -1,6 +1,10 @@
 package com.training.dle.androidtwitter;
 
 import android.content.Context;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,18 +41,21 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet>{
         }else{
             viewHolder = (ViewHolder)convertView.getTag();
         }
-        viewHolder.body.setText(tweet.getBody());
+        String body = String.format("<small>%s</small>", tweet.getBody());
+        viewHolder.body.setText(Html.fromHtml(body));
         try {
             long time = tweet.getCreatedDate().getTime();
             String date = DateUtils.getRelativeTimeSpanString(time, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString();
-            viewHolder.date.setText( date );
+            date = String.format("<small><i>%s</i></small>", date);
+            viewHolder.date.setText( Html.fromHtml(date) );
         }catch(Exception e){
             e.printStackTrace();
         }
         // clear out photo view
-        viewHolder.profileImage.setImageResource( android.R.color.transparent);
+        viewHolder.profileImage.setImageResource(android.R.color.transparent);
         Picasso.with(getContext()).load(tweet.getUser().getProfileImageUrl()).into(viewHolder.profileImage);
-        viewHolder.username.setText(tweet.getUser().getScreenName());
+        String name = String.format("<small><strong>%s</strong><small> @%s</small>", tweet.getUser().getName(), tweet.getUser().getScreenName());
+        viewHolder.username.setText(Html.fromHtml(name));
         return convertView;
     }
 

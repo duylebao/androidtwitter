@@ -37,8 +37,7 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="86dp"
         android:hint="@string/enter_tweet_hine"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignRight="@+id/btnTweetSubmit"
+        android:layout_alignEnd="@+id/btnTweetSubmit" />
 
 </RelativeLayout>

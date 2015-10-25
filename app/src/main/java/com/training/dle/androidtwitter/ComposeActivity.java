@@ -1,6 +1,9 @@
 package com.training.dle.androidtwitter;
 
+import android.app.ActionBar;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,6 +28,7 @@ public class ComposeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compose);
+
         btnCancel = (Button)findViewById(R.id.btnCancel);
         btnTweet = (Button)findViewById(R.id.btnTweetSubmit);
         tvComposeTweet = (EditText)findViewById(R.id.etComposeText);
