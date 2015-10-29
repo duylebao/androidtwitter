@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.training.dle.androidtwitter.fragments.TweetsListFragment;
 import com.training.dle.androidtwitter.models.Tweet;
 
 import org.apache.http.Header;
@@ -20,24 +21,20 @@ import java.util.List;
 
 public class TimelineActivity extends AppCompatActivity {
     private TwitterClient client;
-    private List<Tweet> tweets;
-    private TweetsArrayAdapter adapter;
-    private ListView lvTweets;
-    public static final int REQUEST_RESULT = 22212;
     private ResultScrollListener scrollListener;
+    public static final int REQUEST_RESULT = 22212;
     private boolean stopLoading = false;
+    private TweetsListFragment tweetsListFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
-        lvTweets = (ListView)findViewById(R.id.lvTweets);
-        tweets = new ArrayList<Tweet>();
-        adapter = new TweetsArrayAdapter(this, tweets);
-        lvTweets.setAdapter(adapter);
+        if (savedInstanceState == null) {
+            tweetsListFragment = (TweetsListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_timeline);
+        }
         client = TwitterApplication.getRestClient();
         populateTimeline();
-
         scrollListener = new ResultScrollListener(8, 0) {
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
@@ -49,18 +46,19 @@ public class TimelineActivity extends AppCompatActivity {
                 return true;
             }
         };
-        lvTweets.setOnScrollListener(scrollListener);
+        tweetsListFragment.getTweetViewList().setOnScrollListener(scrollListener);
     }
 
     private void populateTimeline(){
-        tweets.clear();
+        tweetsListFragment.getTweetAdapter().clear();
         populateTimeline(0);
     }
 
     private void populateTimeline(int page){
         long maxId = TwitterClient.MAX_ID;
-        if (page > 0 && this.tweets.size() > 0){
-            Tweet t = tweets.get( tweets.size() - 1);
+        int size = tweetsListFragment.getTweetAdapter().getCount();
+        if (page > 0 && size > 0){
+            Tweet t = tweetsListFragment.getTweetAdapter().getItem(size - 1);
             maxId = Long.parseLong(t.getId());
         }
         populateTimeline(maxId);
@@ -71,8 +69,7 @@ public class TimelineActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 stopLoading = false;
-                tweets.addAll(Tweet.fromJsonArray(response));
-                adapter.notifyDataSetChanged();
+                tweetsListFragment.getTweetAdapter().addAll(Tweet.fromJsonArray(response));
             }
 
             @Override

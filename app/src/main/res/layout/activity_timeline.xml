@@ -3,13 +3,15 @@
     android:layout_height="match_parent"
     tools:context="com.training.dle.androidtwitter.TimelineActivity">
 
-    <ListView
+    <fragment
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/lvTweets"
+        android:name="com.training.dle.androidtwitter.fragments.TweetsListFragment"
+        android:id="@+id/fragment_timeline"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        tools:layout="@layout/fragment_tweets_list"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
