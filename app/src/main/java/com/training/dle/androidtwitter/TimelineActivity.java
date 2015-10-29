@@ -1,84 +1,42 @@
 package com.training.dle.androidtwitter;
 
 import android.content.Intent;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.loopj.android.http.JsonHttpResponseHandler;
+import android.view.View;
+
+import com.astuetz.PagerSlidingTabStrip;
+import com.training.dle.androidtwitter.fragments.HomeTimelineFragment;
+import com.training.dle.androidtwitter.fragments.MentionsTimelineFragment;
 import com.training.dle.androidtwitter.fragments.TweetsListFragment;
-import com.training.dle.androidtwitter.models.Tweet;
-
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import android.util.Log;
-import android.widget.ListView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class TimelineActivity extends AppCompatActivity {
-    private TwitterClient client;
-    private ResultScrollListener scrollListener;
     public static final int REQUEST_RESULT = 22212;
-    private boolean stopLoading = false;
     private TweetsListFragment tweetsListFragment;
+    private TweetsPagerAdapter adapter;
+    private ViewPager vpPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
-        if (savedInstanceState == null) {
-            tweetsListFragment = (TweetsListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_timeline);
-        }
-        client = TwitterApplication.getRestClient();
-        populateTimeline();
-        scrollListener = new ResultScrollListener(8, 0) {
-            @Override
-            public boolean onLoadMore(int page, int totalItemsCount) {
-                if (stopLoading){
-                    return false;
-                }
-                populateTimeline(page);
+//        if (savedInstanceState == null) {
+//            tweetsListFragment = (TweetsListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_timeline);
+//        }
+        adapter = new TweetsPagerAdapter(getSupportFragmentManager());
+        vpPager = (ViewPager)findViewById(R.id.viewpager);
+        vpPager.setAdapter(adapter);
 
-                return true;
-            }
-        };
-        tweetsListFragment.getTweetViewList().setOnScrollListener(scrollListener);
+        PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+        tabsStrip.setViewPager(vpPager);
     }
 
-    private void populateTimeline(){
-        tweetsListFragment.getTweetAdapter().clear();
-        populateTimeline(0);
-    }
-
-    private void populateTimeline(int page){
-        long maxId = TwitterClient.MAX_ID;
-        int size = tweetsListFragment.getTweetAdapter().getCount();
-        if (page > 0 && size > 0){
-            Tweet t = tweetsListFragment.getTweetAdapter().getItem(size - 1);
-            maxId = Long.parseLong(t.getId());
-        }
-        populateTimeline(maxId);
-    }
-
-    private void populateTimeline(long maxId){
-        client.getHomeTimeline(maxId, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                stopLoading = false;
-                tweetsListFragment.getTweetAdapter().addAll(Tweet.fromJsonArray(response));
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                stopLoading = true;
-                Log.d("DEBUG", "FAIL:" + errorResponse.toString());
-            }
-        });
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -110,7 +68,43 @@ public class TimelineActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == REQUEST_RESULT){
-            populateTimeline();
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    public class TweetsPagerAdapter extends FragmentPagerAdapter{
+        final String[] titles = {"Home", "Mentions"};
+
+        public TweetsPagerAdapter(FragmentManager fm){
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            if (position == 0){
+                return new HomeTimelineFragment();
+            }else if (position == 1){
+                return new MentionsTimelineFragment();
+            }
+            return null;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return titles[position];
+        }
+
+        @Override
+        public int getCount() {
+            return titles.length;
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            if (object instanceof TweetsListFragment){
+                ((TweetsListFragment)object).refresh();
+            }
+            return super.getItemPosition(object);
         }
     }
 }

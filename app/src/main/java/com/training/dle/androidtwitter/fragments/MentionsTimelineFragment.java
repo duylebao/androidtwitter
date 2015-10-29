@@ -16,7 +16,7 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class HomeTimelineFragment extends TweetsListFragment{
+public class MentionsTimelineFragment extends TweetsListFragment{
     private TwitterClient client;
     private ResultScrollListener scrollListener;
     private boolean stopLoading = false;
@@ -62,12 +62,12 @@ public class HomeTimelineFragment extends TweetsListFragment{
             Tweet t = adapter.getItem(size - 1);
             maxId = Long.parseLong(t.getId());
         }
-        Log.i("DEBUG","HOME CALLLLLLING MAX: "+maxId);
+        Log.i("DEBUG","MENTIONS CALLLLLLING MAX: "+maxId);
         populateTimeline(maxId);
     }
 
     private void populateTimeline(long maxId){
-        client.getHomeTimeline(maxId, new JsonHttpResponseHandler() {
+        client.getMentionsTimeline(maxId, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 stopLoading = false;

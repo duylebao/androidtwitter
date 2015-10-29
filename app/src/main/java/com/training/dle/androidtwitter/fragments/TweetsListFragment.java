@@ -10,17 +10,15 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.training.dle.androidtwitter.R;
-import com.training.dle.androidtwitter.ResultScrollListener;
 import com.training.dle.androidtwitter.TweetsArrayAdapter;
 import com.training.dle.androidtwitter.models.Tweet;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class TweetsListFragment extends Fragment{
-    private List<Tweet> tweets;
-    private TweetsArrayAdapter adapter;
-    private ListView lvTweets;
+public abstract class TweetsListFragment extends Fragment{
+    protected List<Tweet> tweets;
+    protected TweetsArrayAdapter adapter;
+    protected ListView lvTweets;
 
     @Nullable
     @Override
@@ -38,11 +36,6 @@ public class TweetsListFragment extends Fragment{
         adapter = new TweetsArrayAdapter(getActivity(), tweets);
     }
 
-    public ListView getTweetViewList(){
-        return lvTweets;
-    }
+    public abstract void refresh();
 
-    public TweetsArrayAdapter getTweetAdapter(){
-        return adapter;
-    }
 }
