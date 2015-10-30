@@ -1,6 +1,5 @@
 package com.training.dle.androidtwitter.fragments;
 
-
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -16,7 +15,8 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class MentionsTimelineFragment extends TweetsListFragment{
+public class UserTimelineFragment extends TweetsListFragment{
+
     private TwitterClient client;
     private ResultScrollListener scrollListener;
     private boolean stopLoading = false;
@@ -31,19 +31,19 @@ public class MentionsTimelineFragment extends TweetsListFragment{
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-//        super.onViewCreated(view, savedInstanceState);
-//        scrollListener = new ResultScrollListener(8, 0) {
-//            @Override
-//            public boolean onLoadMore(int page, int totalItemsCount) {
-//                if (stopLoading){
-//                    return false;
-//                }
-//                populateTimeline(page);
-//
-//                return true;
-//            }
-//        };
-//        lvTweets.setOnScrollListener(scrollListener);
+        super.onViewCreated(view, savedInstanceState);
+        scrollListener = new ResultScrollListener(8, 0) {
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+                if (stopLoading){
+                    return false;
+                }
+                populateTimeline(page);
+
+                return true;
+            }
+        };
+        lvTweets.setOnScrollListener(scrollListener);
     }
 
     public void refresh(){
@@ -51,6 +51,10 @@ public class MentionsTimelineFragment extends TweetsListFragment{
     }
 
     private void populateTimeline(){
+        if (scrollListener != null) {
+            Log.i("DEBUG", "scrolllllllllllll");
+            scrollListener.reset();
+        }
         adapter.clear();
         populateTimeline(0);
     }
@@ -62,12 +66,13 @@ public class MentionsTimelineFragment extends TweetsListFragment{
             Tweet t = adapter.getItem(size - 1);
             maxId = Long.parseLong(t.getId());
         }
-        Log.i("DEBUG","MENTIONS CALLLLLLING MAX: "+maxId);
+        Log.i("DEBUG", "USER TIMELINE CALLLLLLING MAX: " + maxId);
         populateTimeline(maxId);
     }
 
     private void populateTimeline(long maxId){
-        client.getMentionsTimeline(maxId, new JsonHttpResponseHandler() {
+        String screenName = getArguments().getString("screen_name");
+        client.getUserTimeline(maxId, screenName, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 stopLoading = false;
@@ -77,9 +82,17 @@ public class MentionsTimelineFragment extends TweetsListFragment{
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 stopLoading = true;
-                Log.d("DEBUG", "MENTIONS TIMELINE FAIL:" + errorResponse.toString());
+                Log.d("DEBUG", "USER TIMELINE FAIL:" + errorResponse.toString());
             }
         });
+    }
+
+    public static UserTimelineFragment newInstance(String screenName) {
+        UserTimelineFragment fragment = new UserTimelineFragment();
+        Bundle args = new Bundle();
+        args.putString("screen_name", screenName);
+        fragment.setArguments(args);
+        return fragment;
     }
 
 }

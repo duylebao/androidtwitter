@@ -72,6 +72,11 @@ public class TimelineActivity extends AppCompatActivity {
         }
     }
 
+    public void onProfileView(MenuItem item) {
+        Intent i = new Intent(TimelineActivity.this, ProfileActivity.class);
+        startActivity(i);
+    }
+
     public class TweetsPagerAdapter extends FragmentPagerAdapter{
         final String[] titles = {"Home", "Mentions"};
 

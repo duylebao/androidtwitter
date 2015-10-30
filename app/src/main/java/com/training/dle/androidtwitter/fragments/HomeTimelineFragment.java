@@ -77,7 +77,7 @@ public class HomeTimelineFragment extends TweetsListFragment{
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 stopLoading = true;
-                Log.d("DEBUG", "FAIL:" + errorResponse.toString());
+                Log.d("DEBUG", "HOME TIMELINE FAIL:" + errorResponse.toString());
             }
         });
     }
