@@ -1,5 +1,6 @@
 package com.training.dle.androidtwitter;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,8 +23,10 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        // get screen name
+        String screenName = getIntent().getStringExtra("screen_name");
         client = TwitterApplication.getRestClient();
-        client.getUserInfo(new JsonHttpResponseHandler(){
+        client.getUserInfo(screenName, new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 User user = User.fromJson(response);
@@ -31,8 +34,6 @@ public class ProfileActivity extends AppCompatActivity {
                 populateProfileHeader(user);
             }
         });
-        // get screen name
-        String screenName = getIntent().getStringExtra("screen_name");
         if (savedInstanceState == null){
             UserTimelineFragment userTimelineFragment = UserTimelineFragment.newInstance(screenName);
             // display fragment

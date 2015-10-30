@@ -1,6 +1,7 @@
 package com.training.dle.androidtwitter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -13,7 +14,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.util.Log;
+import android.widget.Toast;
+
 import com.squareup.picasso.Picasso;
+import com.training.dle.androidtwitter.fragments.HomeTimelineFragment;
 import com.training.dle.androidtwitter.models.Tweet;
 
 import java.util.List;
