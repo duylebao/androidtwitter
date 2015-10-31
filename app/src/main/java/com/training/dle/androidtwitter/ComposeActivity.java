@@ -33,6 +33,7 @@ public class ComposeActivity extends AppCompatActivity {
         btnTweet = (Button)findViewById(R.id.btnTweetSubmit);
         tvComposeTweet = (EditText)findViewById(R.id.etComposeText);
         client = TwitterApplication.getRestClient();
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.BLUE));
     }
 
     @Override
