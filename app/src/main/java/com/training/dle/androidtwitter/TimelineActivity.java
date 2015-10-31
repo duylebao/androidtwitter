@@ -18,7 +18,6 @@ import com.training.dle.androidtwitter.fragments.TweetsListFragment;
 
 public class TimelineActivity extends AppCompatActivity {
     public static final int REQUEST_RESULT = 22212;
-    private TweetsListFragment tweetsListFragment;
     private TweetsPagerAdapter adapter;
     private ViewPager vpPager;
 
@@ -26,9 +25,6 @@ public class TimelineActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
-//        if (savedInstanceState == null) {
-//            tweetsListFragment = (TweetsListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_timeline);
-//        }
         adapter = new TweetsPagerAdapter(getSupportFragmentManager());
         vpPager = (ViewPager)findViewById(R.id.viewpager);
         vpPager.setAdapter(adapter);
@@ -78,7 +74,7 @@ public class TimelineActivity extends AppCompatActivity {
     }
 
     public class TweetsPagerAdapter extends FragmentPagerAdapter{
-        final String[] titles = {"Home", "Mentions"};
+        final String[] titles = {"Home","Mentions"};
 
         public TweetsPagerAdapter(FragmentManager fm){
             super(fm);

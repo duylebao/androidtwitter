@@ -5,16 +5,16 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
-
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.training.dle.androidtwitter.ResultScrollListener;
 import com.training.dle.androidtwitter.TwitterApplication;
 import com.training.dle.androidtwitter.TwitterClient;
 import com.training.dle.androidtwitter.models.Tweet;
-
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.List;
 
 public class MentionsTimelineFragment extends TweetsListFragment{
     private TwitterClient client;
@@ -31,19 +31,19 @@ public class MentionsTimelineFragment extends TweetsListFragment{
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-//        super.onViewCreated(view, savedInstanceState);
-//        scrollListener = new ResultScrollListener(8, 0) {
-//            @Override
-//            public boolean onLoadMore(int page, int totalItemsCount) {
-//                if (stopLoading){
-//                    return false;
-//                }
-//                populateTimeline(page);
-//
-//                return true;
-//            }
-//        };
-//        lvTweets.setOnScrollListener(scrollListener);
+        super.onViewCreated(view, savedInstanceState);
+        scrollListener = new ResultScrollListener(8, 0) {
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+                if (stopLoading){
+                    return false;
+                }
+                populateTimeline(page);
+
+                return true;
+            }
+        };
+        lvTweets.setOnScrollListener(scrollListener);
     }
 
     public void refresh(){
@@ -71,7 +71,11 @@ public class MentionsTimelineFragment extends TweetsListFragment{
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 stopLoading = false;
-                adapter.addAll(Tweet.fromJsonArray(response));
+                List<Tweet> tws = Tweet.fromJsonArray(response);
+                if (tws.size() < TwitterClient.NUMBER_OF_ROWS){
+                    stopLoading = true;
+                }
+                adapter.addAll(tws);
             }
 
             @Override
