@@ -3,7 +3,9 @@ package com.training.dle.androidtwitter.models;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable{
     private String id;
     private String screenName;
     private String name;

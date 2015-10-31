@@ -1,26 +1,21 @@
 package com.training.dle.androidtwitter;
 
-import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.TextView;
-
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.squareup.picasso.Picasso;
+import com.training.dle.androidtwitter.fragments.ProfileHeaderFragment;
 import com.training.dle.androidtwitter.fragments.UserTimelineFragment;
 import com.training.dle.androidtwitter.models.User;
-
 import org.apache.http.Header;
 import org.json.JSONObject;
 
 public class ProfileActivity extends AppCompatActivity {
     private TwitterClient client;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         // get screen name
@@ -30,31 +25,20 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 User user = User.fromJson(response);
-                getSupportActionBar().setTitle("@"+user.getScreenName());
-                populateProfileHeader(user);
+                getSupportActionBar().setTitle("@" + user.getScreenName());
+                if (savedInstanceState == null){
+                    UserTimelineFragment userTimelineFragment = UserTimelineFragment.newInstance(user.getScreenName());
+                    // display fragment
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ft.replace(R.id.fl_container, userTimelineFragment);
+                    ft.replace(R.id.fl_header_container, ProfileHeaderFragment.newInstance(user));
+                    ft.commit();
+                }
             }
         });
-        if (savedInstanceState == null){
-            UserTimelineFragment userTimelineFragment = UserTimelineFragment.newInstance(screenName);
-            // display fragment
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.fl_container, userTimelineFragment);
-            ft.commit();
-        }
+
     }
 
-    private void populateProfileHeader(User user){
-        TextView tvName = (TextView)findViewById(R.id.tvFullName);
-        TextView tvTagLine = (TextView)findViewById(R.id.tvTagLine);
-        TextView tvFollowers = (TextView)findViewById(R.id.tvFollowers);
-        TextView tvFollowing = (TextView)findViewById(R.id.tvFollowing);
-        ImageView ivProfileImage = (ImageView)findViewById(R.id.ivProfileImage);
-        tvName.setText(user.getName());
-        tvTagLine.setText(user.getTagLine());
-        tvFollowers.setText( user.getFollowersCount() + " followers");
-        tvFollowing.setText( user.getFollowingCount() + " following");
-        Picasso.with(this).load(user.getProfileImageUrl()).into(ivProfileImage);
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
