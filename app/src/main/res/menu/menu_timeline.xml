@@ -11,6 +11,15 @@
 
 
     <item
+        android:id="@+id/mnuProfile"
+        android:title="@string/profile"
+        android:icon="@drawable/ic_profile"
+        android:onClick="onProfileView"
+        app:showAsAction="ifRoom">
+
+    </item>
+
+    <item
         android:id="@+id/mnuCompose"
         android:title="@string/compose"
         android:icon="@mipmap/ic_compose"
